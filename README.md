@@ -28,5 +28,5 @@ See `docs/architecture.md` and `docs/roadmap.md` for details.
 ## Authors
 
 - [BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD)
-- [Nathan Godin]
+- Nathan Godin
 - [Daniel Ribeirinha-Braga]()
