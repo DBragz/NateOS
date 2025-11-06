@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NateOS Management Interface</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏗️ NateOS Network Configuration</h1>
+            <div class="status-bar">
+                <span id="status-indicator" class="status-ok">●</span>
+                <span id="status-text">Connected</span>
+            </div>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="l2">Layer 2</button>
+            <button class="tab-btn" data-tab="l3">Layer 3</button>
+            <button class="tab-btn" data-tab="mgmt">Management</button>
+            <button class="tab-btn" data-tab="system">System</button>
+        </nav>
+
+        <main>
+            <!-- Layer 2 Tab -->
+            <div id="l2" class="tab-content active">
+                <h2>Layer 2 Configuration</h2>
+                
+                <section class="config-section">
+                    <h3>Interfaces</h3>
+                    <div id="interfaces-list"></div>
+                    <button class="btn-primary" onclick="addInterface()">Add Interface</button>
+                </section>
+
+                <section class="config-section">
+                    <h3>VLANs</h3>
+                    <div id="vlans-list"></div>
+                    <button class="btn-primary" onclick="showAddVlan()">Add VLAN</button>
+                </section>
+
+                <section class="config-section">
+                    <h3>Spanning Tree Protocol (STP)</h3>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="stp-enabled" onchange="updateSTP()">
+                            Enable STP
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Mode:</label>
+                        <select id="stp-mode" onchange="updateSTP()">
+                            <option value="rstp">RSTP</option>
+                            <option value="mstp">MSTP</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Bridge Priority:</label>
+                        <input type="number" id="stp-priority" value="32768" onchange="updateSTP()">
+                    </div>
+                </section>
+
+                <section class="config-section">
+                    <h3>LACP (Link Aggregation)</h3>
+                    <div id="lacp-config">
+                        <div class="form-group">
+                            <label>LACP Status:</label>
+                            <span id="lacp-status">Not configured</span>
+                        </div>
+                        <button class="btn-primary" onclick="configureLACP()">Configure LACP</button>
+                    </div>
+                </section>
+
+                <section class="config-section">
+                    <h3>LLDP</h3>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="lldp-enabled" onchange="updateLLDP()">
+                            Enable LLDP
+                        </label>
+                    </div>
+                </section>
+
+                <section class="config-section">
+                    <h3>IGMP Snooping</h3>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="igmp-enabled" onchange="updateIGMP()">
+                            Enable IGMP Snooping
+                        </label>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Layer 3 Tab -->
+            <div id="l3" class="tab-content">
+                <h2>Layer 3 Configuration</h2>
+                
+                <section class="config-section">
+                    <h3>Static Routes</h3>
+                    <div id="routes-list"></div>
+                    <button class="btn-primary" onclick="showAddRoute()">Add Static Route</button>
+                </section>
+
+                <section class="config-section">
+                    <h3>OSPF</h3>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="ospf-enabled" onchange="updateOSPF()">
+                            Enable OSPF
+                        </label>
+                    </div>
+                    <div id="ospf-areas"></div>
+                    <button class="btn-primary" onclick="addOSPFArea()">Add OSPF Area</button>
+                </section>
+
+                <section class="config-section">
+                    <h3>BGP</h3>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="bgp-enabled" onchange="updateBGP()">
+                            Enable BGP
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>ASN:</label>
+                        <input type="number" id="bgp-asn" placeholder="65000" onchange="updateBGP()">
+                    </div>
+                    <div id="bgp-neighbors"></div>
+                    <button class="btn-primary" onclick="addBGPNeighbor()">Add BGP Neighbor</button>
+                </section>
+
+                <section class="config-section">
+                    <h3>VRRP</h3>
+                    <div id="vrrp-config">
+                        <button class="btn-primary" onclick="configureVRRP()">Configure VRRP</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Management Tab -->
+            <div id="mgmt" class="tab-content">
+                <h2>Management & Operations</h2>
+                
+                <section class="config-section">
+                    <h3>QoS (Quality of Service)</h3>
+                    <div id="qos-config">
+                        <button class="btn-primary" onclick="configureQoS()">Configure QoS Policies</button>
+                    </div>
+                </section>
+
+                <section class="config-section">
+                    <h3>ACL (Access Control Lists)</h3>
+                    <div id="acl-list"></div>
+                    <button class="btn-primary" onclick="showAddACL()">Add ACL Rule</button>
+                </section>
+
+                <section class="config-section">
+                    <h3>SPAN (Port Mirroring)</h3>
+                    <div id="span-config">
+                        <button class="btn-primary" onclick="configureSPAN()">Configure SPAN</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- System Tab -->
+            <div id="system" class="tab-content">
+                <h2>System Configuration</h2>
+                
+                <section class="config-section">
+                    <h3>System Settings</h3>
+                    <div class="form-group">
+                        <label>Hostname:</label>
+                        <input type="text" id="system-hostname" placeholder="nateos-switch" onchange="updateSystem()">
+                    </div>
+                    <div class="form-group">
+                        <label>Domain:</label>
+                        <input type="text" id="system-domain" placeholder="local" onchange="updateSystem()">
+                    </div>
+                </section>
+
+                <section class="config-section">
+                    <h3>AAA (Authentication, Authorization, Accounting)</h3>
+                    <div class="form-group">
+                        <label>Authentication Method:</label>
+                        <select id="aaa-method" onchange="updateAAA()">
+                            <option value="local">Local</option>
+                            <option value="radius">RADIUS</option>
+                            <option value="tacacs">TACACS+</option>
+                        </select>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
